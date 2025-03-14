@@ -1,4 +1,5 @@
-import asks
+# import asks
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -66,12 +67,13 @@ async def post(url: str, msg: str, soap_action: str) -> Response:
         'SOAPAction': soap_action,
         'Content-Type': 'text/xml'
     }
-    resp = await asks.post(url, data=msg, headers=headers)
+    # resp = await asks.post(url, data=msg, headers=headers)
+    resp = requests.post(url, data=msg, headers=headers)
     _validate_response(resp)
     return Response(resp.content, resp.status_code)
 
 
-def _validate_response(resp: asks.response_objects.Response) -> None:
+def _validate_response(resp: requests.models.Response) -> None:
     if resp.status_code == 500:
         doc = BeautifulSoup(resp.content, 'lxml-xml')
         err_code = int(doc.errorCode.string)

@@ -4,14 +4,15 @@ import re
 from typing import Tuple, List
 
 from curio import socket
-import asks
+# import asks
+import requests
 from yarl import URL
 from bs4 import BeautifulSoup
 
 from . import proto, soap
 
 
-asks.init('curio')
+# asks.init('curio')
 
 SSDP_REQUEST = b'M-SEARCH * HTTP/1.1\r\n' \
     b'HOST: 239.255.255.250:1900\r\n' \
@@ -69,7 +70,8 @@ class Gateway:
 
 async def find_gateway() -> Gateway:
     location, gateway_ip = await _make_ssdp_request()
-    resp = await asks.get(location)
+    # resp = await asks.get(location)
+    resp = requests.get(location)
     control_path, upnp_schema = _parse_igd_profile(resp.content)
     control_url = URL(location).with_path(control_path)
     return Gateway(str(control_url), gateway_ip)
